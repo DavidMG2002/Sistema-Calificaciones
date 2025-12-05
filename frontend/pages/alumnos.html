@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Alumnos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            padding: 20px;
+            color: #212529;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 2px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #212529;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+        .btn-group {
+            margin-bottom: 25px;
+            display: flex;
+            gap: 10px;
+        }
+        .btn {
+            padding: 10px 24px;
+            border: 1px solid #dee2e6;
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            background: white;
+            color: #212529;
+        }
+        .btn:hover {
+            background: #f8f9fa;
+            border-color: #adb5bd;
+        }
+        .btn-primary {
+            background: #212529;
+            color: white;
+            border-color: #212529;
+        }
+        .btn-primary:hover {
+            background: #000;
+            border-color: #000;
+        }
+        .btn-success {
+            background: white;
+            color: #212529;
+            border-color: #212529;
+        }
+        .btn-success:hover {
+            background: #212529;
+            color: white;
+        }
+        .btn-danger {
+            background: white;
+            color: #dc3545;
+            border-color: #dee2e6;
+        }
+        .btn-danger:hover {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 16px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #495057;
+        }
+        tr:hover {
+            background: #f8f9fa;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            color: #495057;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 2px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #212529;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 500px;
+            margin: 80px auto;
+            padding: 40px;
+            border-radius: 2px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .modal-header h2 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #212529;
+        }
+        .close {
+            font-size: 28px;
+            cursor: pointer;
+            color: #adb5bd;
+            background: none;
+            border: none;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .close:hover {
+            color: #212529;
+        }
+        .btn-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gestión de Alumnos</h1>
+        
+        <div class="btn-group">
+            <button class="btn btn-success" onclick="mostrarFormulario()">Nuevo Alumno</button>
+            <button class="btn btn-primary" onclick="cargarAlumnos()">Actualizar</button>
+        </div>
+        
+        <table id="tablaAlumnos">
+            <thead>
+                <tr>
+                    <th>Matrícula</th>
+                    <th>Nombre</th>
+                    <th>Grupo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="cuerpoTabla">
+                <tr>
+                    <td colspan="4" class="empty-state">Cargando datos...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="modalFormulario" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="tituloModal">Nuevo Alumno</h2>
+                <button class="close" onclick="cerrarModal()">&times;</button>
+            </div>
+            <form id="formAlumno" onsubmit="guardarAlumno(event)">
+                <div class="form-group">
+                    <label>Matrícula:</label>
+                    <input type="number" id="matricula" required>
+                </div>
+                <div class="form-group">
+                    <label>Nombre:</label>
+                    <input type="text" id="nombre" required>
+                </div>
+                <div class="form-group">
+                    <label>Grupo:</label>
+                    <select id="nombre_grupo" required>
+                        <option value="">Seleccione un grupo</option>
+                    </select>
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <button type="button" class="btn" onclick="cerrarModal()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    
+    <script>
+        let modoEdicion = false;
+        let matriculaEdicion = null;
+
+        window.onload = async () => {
+            await cargarGrupos();
+            await cargarAlumnos();
+        };
+
+        async function cargarGrupos() {
+            try {
+                const response = await API.getGrupos();
+                const select = document.getElementById('nombre_grupo');
+                
+                select.innerHTML = '<option value="">Seleccione un grupo</option>';
+                
+                if (response.success && response.data.length > 0) {
+                    response.data.forEach(grupo => {
+                        const option = document.createElement('option');
+                        option.value = grupo.nombre_grupo;
+                        option.textContent = grupo.nombre_grupo;
+                        select.appendChild(option);
+                    });
+                } else {
+                    const option = document.createElement('option');
+                    option.value = '';
+                    option.textContent = 'No hay grupos disponibles';
+                    select.appendChild(option);
+                }
+            } catch (error) {
+                console.error('Error al cargar grupos:', error);
+                alert('Error al cargar grupos. Verifica la conexión con la API.');
+            }
+        }
+
+        async function cargarAlumnos() {
+            try {
+                const response = await API.getAlumnos();
+                const tbody = document.getElementById('cuerpoTabla');
+                
+                if (response.success && response.data.length > 0) {
+                    tbody.innerHTML = '';
+                    response.data.forEach(alumno => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${alumno.matricula}</td>
+                            <td>${alumno.nombre}</td>
+                            <td>${alumno.nombre_grupo}</td>
+                            <td>
+                                <div class="btn-actions">
+                                    <button class="btn btn-primary" onclick="editarAlumno(${alumno.matricula})">Editar</button>
+                                    <button class="btn btn-danger" onclick="eliminarAlumno(${alumno.matricula})">Eliminar</button>
+                                </div>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No hay alumnos registrados</td></tr>';
+                }
+            } catch (error) {
+                console.error('Error al cargar alumnos:', error);
+                alert('Error al cargar los datos');
+            }
+        }
+
+        function mostrarFormulario() {
+            modoEdicion = false;
+            document.getElementById('tituloModal').textContent = 'Nuevo Alumno';
+            document.getElementById('formAlumno').reset();
+            document.getElementById('matricula').readOnly = false;
+            document.getElementById('modalFormulario').style.display = 'block';
+        }
+
+        async function editarAlumno(matricula) {
+            try {
+                const response = await API.getAlumnoById(matricula);
+                if (response.success) {
+                    modoEdicion = true;
+                    matriculaEdicion = matricula;
+                    document.getElementById('tituloModal').textContent = 'Editar Alumno';
+                    document.getElementById('matricula').value = response.data.matricula;
+                    document.getElementById('matricula').readOnly = true;
+                    document.getElementById('nombre').value = response.data.nombre;
+                    document.getElementById('nombre_grupo').value = response.data.nombre_grupo;
+                    document.getElementById('modalFormulario').style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error al cargar alumno:', error);
+                alert('Error al cargar los datos del alumno');
+            }
+        }
+
+        async function guardarAlumno(event) {
+            event.preventDefault();
+            
+            const alumnoData = {
+                matricula: parseInt(document.getElementById('matricula').value),
+                nombre: document.getElementById('nombre').value,
+                nombre_grupo: document.getElementById('nombre_grupo').value
+            };
+
+            try {
+                let response;
+                if (modoEdicion) {
+                    response = await API.updateAlumno(matriculaEdicion, alumnoData);
+                } else {
+                    response = await API.createAlumno(alumnoData);
+                }
+
+                if (response.success) {
+                    alert(modoEdicion ? 'Alumno actualizado exitosamente' : 'Alumno creado exitosamente');
+                    cerrarModal();
+                    cargarAlumnos();
+                } else {
+                    alert('Error: ' + response.error);
+                }
+            } catch (error) {
+                console.error('Error al guardar alumno:', error);
+                alert('Error al guardar el alumno');
+            }
+        }
+
+        async function eliminarAlumno(matricula) {
+            if (confirm('¿Está seguro de eliminar este alumno?')) {
+                try {
+                    const response = await API.deleteAlumno(matricula);
+                    if (response.success) {
+                        alert('Alumno eliminado exitosamente');
+                        cargarAlumnos();
+                    } else {
+                        alert('Error: ' + response.error);
+                    }
+                } catch (error) {
+                    console.error('Error al eliminar alumno:', error);
+                    alert('Error al eliminar el alumno');
+                }
+            }
+        }
+
+        function cerrarModal() {
+            document.getElementById('modalFormulario').style.display = 'none';
+            document.getElementById('formAlumno').reset();
+        }
+    </script>
+</body>
+</html>

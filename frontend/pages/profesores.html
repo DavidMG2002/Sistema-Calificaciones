@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profesores</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Gestión de Profesores</h1>
+        
+        <button class="btn btn-success" onclick="mostrarForm()">+ Nuevo</button>
+        <button class="btn btn-primary" onclick="cargar()"> Actualizar</button>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>DNI</th>
+                    <th>Nombre</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+        </table>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModal()">&times;</span>
+            <h2 id="titulo">Nuevo Profesor</h2>
+            <form id="form" onsubmit="guardar(event)">
+                <div class="form-group">
+                    <label>DNI:</label>
+                    <input type="number" id="dni" required>
+                </div>
+                <div class="form-group">
+                    <label>Nombre:</label>
+                    <input type="text" id="nombre" required>
+                </div>
+                <button type="submit" class="btn btn-success">Guardar</button>
+                <button type="button" class="btn" onclick="cerrarModal()">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+ <script src="../js/api.js"></script>
+    <script>
+        let edicion = false, idEdicion = null;
+
+        window.onload = () => cargar();
+
+        async function cargar() {
+            const res = await API.getProfesores();
+            const tbody = document.getElementById('tbody');
+            if (res.success) {
+                tbody.innerHTML = res.data.map(p => `
+                    <tr>
+                        <td>${p.dni}</td>
+                        <td>${p.nombre}</td>
+                        <td>
+                            <button class="btn btn-primary" onclick="editar(${p.dni})">Editar</button>
+                            <button class="btn btn-danger" onclick="eliminar(${p.dni})">Eliminar</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function mostrarForm() {
+            edicion = false;
+            document.getElementById('form').reset();
+            document.getElementById('dni').readOnly = false;
+            document.getElementById('modal').style.display = 'block';
+        }
+
+        async function editar(dni) {
+            const res = await API.getProfesores();
+            const prof = res.data.find(p => p.dni == dni);
+            if (prof) {
+                edicion = true;
+                idEdicion = dni;
+                document.getElementById('dni').value = prof.dni;
+                document.getElementById('dni').readOnly = true;
+                document.getElementById('nombre').value = prof.nombre;
+                document.getElementById('modal').style.display = 'block';
+            }
+        }
+
+        async function guardar(e) {
+            e.preventDefault();
+            const data = {
+                dni: parseInt(document.getElementById('dni').value),
+                nombre: document.getElementById('nombre').value
+            };
+            const res = edicion 
+                ? await API.updateProfesor(idEdicion, data)
+                : await API.createProfesor(data);
+            
+            if (res.success) {
+                alert('Guardado!');
+                cerrarModal();
+                cargar();
+            }
+        }
+
+        async function eliminar(dni) {
+            if (confirm('¿Eliminar?')) {
+                await API.deleteProfesor(dni);
+                cargar();
+            }
+        }
+
+        function cerrarModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

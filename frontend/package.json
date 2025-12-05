@@ -1,0 +1,13 @@
+{
+  "name": "frontend-proyecto-profesores",
+  "version": "1.0.0",
+  "description": "Frontend minimalista para el proyecto de profesores",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve -l 3000"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "serve": "^14.2.0"
+  }
+}

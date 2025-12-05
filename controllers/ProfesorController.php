@@ -9,7 +9,6 @@ class ProfesorController {
         $this->profesorModel = new ProfesorModel();
     }
 
-    // GET /profesores
     public function getAll() {
         try {
             $profesores = $this->profesorModel->getAll();
@@ -19,7 +18,6 @@ class ProfesorController {
         }
     }
 
-    // GET /profesores/{dni}
     public function getById($dni) {
         try {
             $profesor = $this->profesorModel->getById($dni);
@@ -33,13 +31,12 @@ class ProfesorController {
         }
     }
 
-    // POST /profesores
     public function create() {
         try {
             $data = json_decode(file_get_contents("php://input"), true);
             
             if (empty($data['dni']) || empty($data['nombre'])) {
-                Response::sendError("DNI y nombre son requeridos", 400);
+                Response::sendError("Datos incompletos", 400);
                 return;
             }
 
@@ -53,7 +50,6 @@ class ProfesorController {
         }
     }
 
-    // PUT /profesores/{dni}
     public function update($dni) {
         try {
             $data = json_decode(file_get_contents("php://input"), true);
@@ -68,7 +64,6 @@ class ProfesorController {
         }
     }
 
-    // DELETE /profesores/{dni}
     public function delete($dni) {
         try {
             if ($this->profesorModel->delete($dni)) {
@@ -78,26 +73,6 @@ class ProfesorController {
             }
         } catch (Exception $e) {
             Response::sendError("Error: " . $e->getMessage());
-        }
-    }
-
-    // GET /profesores/{dni}/practicas - Prácticas diseñadas por un profesor
-    public function getPracticasByProfesor($dni) {
-        try {
-            $practicas = $this->profesorModel->getPracticasByProfesor($dni);
-            Response::sendSuccess($practicas);
-        } catch (Exception $e) {
-            Response::sendError("Error al obtener prácticas del profesor: " . $e->getMessage());
-        }
-    }
-
-    // GET /profesores/{dni}/estadisticas - Estadísticas del profesor
-    public function getEstadisticas($dni) {
-        try {
-            $estadisticas = $this->profesorModel->getEstadisticas($dni);
-            Response::sendSuccess($estadisticas);
-        } catch (Exception $e) {
-            Response::sendError("Error al obtener estadísticas: " . $e->getMessage());
         }
     }
 }

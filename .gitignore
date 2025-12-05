@@ -1,0 +1,57 @@
+
+
+# Node modules
+/node_modules/
+
+# Composer vendor
+vendor/
+
+
+
+# Variables de configuración y credenciales
+.env
+.env.local
+.env.*.local
+
+# Archivos de configuración sensibles
+/config/database.php
+/config/test_conexion.php
+
+
+# Bases de datos exportadas
+*.sql
+*.sqlite
+
+# Log de errores
+*.log
+php_errors.log
+
+
+
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Mac
+.DS_Store
+
+# Linux
+*~
+
+
+# Cache de Node
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+
+# VSCode
+.vscode/
+.history/
+.idea/
+
+# Archivos temporales
+*.swp
+*.tmp
+*.temp

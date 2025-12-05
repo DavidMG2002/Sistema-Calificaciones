@@ -3,222 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Exámenes - Gestión Académica</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>Sistema de Calificaciones</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Georgia", "Times New Roman", serif;
+            background: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .menu-container {
+            background: #ffffff;
+            padding: 50px 40px;
+            border: 2px solid #000000;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #000000;
+            margin-bottom: 40px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-bottom: 3px solid #000000;
+            padding-bottom: 15px;
+        }
+
+        .menu-options {
+            margin: 30px 0;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 18px 20px;
+            margin: 18px 0;
+            background: #000000;
+            color: #ffffff;
+            text-decoration: none;
+            border: 2px solid #000000;
+            font-size: 17px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .btn:hover {
+            background: #ffffff;
+            color: #000000;
+            transform: translateX(5px);
+        }
+
+        footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #000000;
+            font-size: 14px;
+            color: #000000;
+            font-style: italic;
+            letter-spacing: 0.5px;
+        }
+    </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <h1 class="logo">
-                <i class="fas fa-graduation-cap"></i>
-                Sistema de Exámenes
-            </h1>
-            <nav class="nav">
-                <button class="nav-btn active" data-tab="alumnos">Alumnos</button>
-                <button class="nav-btn" data-tab="profesores">Profesores</button>
-                <button class="nav-btn" data-tab="examenes">Exámenes</button>
-                <button class="nav-btn" data-tab="practicas">Prácticas</button>
-                <button class="nav-btn" data-tab="grupos">Grupos</button>
-            </nav>
+
+    <div class="menu-container">
+        <h1>Sistema de Calificaciones</h1>
+        
+        <div class="menu-options">
+            <a href="pages/alumnos.html" class="btn">Alumnos</a>
+            <a href="pages/profesores.html" class="btn">Profesores</a>
+            <a href="pages/examenes.html" class="btn">Exámenes</a>
+            <a href="pages/grupos.html" class="btn">Grupos</a>
         </div>
-    </header>
 
-    <!-- Main Content -->
-    <main class="main">
-        <div class="container">
-            <!-- Loading Spinner -->
-            <div id="loading" class="loading hidden">
-                <i class="fas fa-spinner fa-spin"></i>
-                <span>Cargando...</span>
-            </div>
+        <footer>Panel Principal Académico</footer>
+    </div>
 
-            <!-- Alumnos Section -->
-            <section id="alumnos" class="tab-content active">
-                <div class="section-header">
-                    <h2><i class="fas fa-users"></i> Gestión de Alumnos</h2>
-                    <button class="btn btn-primary" onclick="showAlumnoForm()">
-                        <i class="fas fa-plus"></i> Nuevo Alumno
-                    </button>
-                </div>
-                
-                <!-- Formulario Alumno -->
-                <div id="alumnoForm" class="form-container hidden">
-                    <form id="alumnoFormData" class="form">
-                        <h3 id="alumnoFormTitle">Nuevo Alumno</h3>
-                        <div class="form-group">
-                            <label for="matricula">Matrícula:</label>
-                            <input type="number" id="matricula" name="matricula" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="nombre">Nombre:</label>
-                            <input type="text" id="nombre" name="nombre" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="nombre_grupo">Grupo:</label>
-                            <input type="text" id="nombre_grupo" name="nombre_grupo" required>
-                        </div>
-                        <div class="form-actions">
-                            <button type="submit" class="btn btn-success">
-                                <i class="fas fa-save"></i> Guardar
-                            </button>
-                            <button type="button" class="btn btn-secondary" onclick="hideAlumnoForm()">
-                                <i class="fas fa-times"></i> Cancelar
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Lista de Alumnos -->
-                <div class="table-container">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Matrícula</th>
-                                <th>Nombre</th>
-                                <th>Grupo</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="alumnosList">
-                            <!-- Los alumnos se cargarán aquí dinámicamente -->
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-
-            <!-- Profesores Section -->
-            <section id="profesores" class="tab-content">
-                <div class="section-header">
-                    <h2><i class="fas fa-chalkboard-teacher"></i> Gestión de Profesores</h2>
-                    <button class="btn btn-primary" onclick="showProfesorForm()">
-                        <i class="fas fa-plus"></i> Nuevo Profesor
-                    </button>
-                </div>
-                
-                <div id="profesorForm" class="form-container hidden">
-                    <form id="profesorFormData" class="form">
-                        <h3 id="profesorFormTitle">Nuevo Profesor</h3>
-                        <div class="form-group">
-                            <label for="dni">DNI:</label>
-                            <input type="number" id="dni" name="dni" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="nombre_profesor">Nombre:</label>
-                            <input type="text" id="nombre_profesor" name="nombre" required>
-                        </div>
-                        <div class="form-actions">
-                            <button type="submit" class="btn btn-success">Guardar</button>
-                            <button type="button" class="btn btn-secondary" onclick="hideProfesorForm()">Cancelar</button>
-                        </div>
-                    </form>
-                </div>
-
-                <div class="table-container">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>DNI</th>
-                                <th>Nombre</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="profesoresList">
-                            <!-- Los profesores se cargarán aquí -->
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-
-            <!-- Exámenes Section -->
-            <section id="examenes" class="tab-content">
-                <div class="section-header">
-                    <h2><i class="fas fa-file-alt"></i> Gestión de Exámenes</h2>
-                    <button class="btn btn-primary" onclick="showExamenForm()">
-                        <i class="fas fa-plus"></i> Nuevo Examen
-                    </button>
-                </div>
-
-                <div class="table-container">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>N° Examen</th>
-                                <th>N° Preguntas</th>
-                                <th>Fecha</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="examenesList">
-                            <!-- Los exámenes se cargarán aquí -->
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-
-            <!-- Prácticas Section -->
-            <section id="practicas" class="tab-content">
-                <div class="section-header">
-                    <h2><i class="fas fa-flask"></i> Gestión de Prácticas</h2>
-                    <button class="btn btn-primary" onclick="showPracticaForm()">
-                        <i class="fas fa-plus"></i> Nueva Práctica
-                    </button>
-                </div>
-
-                <div class="table-container">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Código</th>
-                                <th>Título</th>
-                                <th>Dificultad</th>
-                                <th>Profesor</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="practicasList">
-                            <!-- Las prácticas se cargarán aquí -->
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-
-            <!-- Grupos Section -->
-            <section id="grupos" class="tab-content">
-                <div class="section-header">
-                    <h2><i class="fas fa-layer-group"></i> Gestión de Grupos</h2>
-                    <button class="btn btn-primary" onclick="showGrupoForm()">
-                        <i class="fas fa-plus"></i> Nuevo Grupo
-                    </button>
-                </div>
-
-                <div class="table-container">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Nombre Grupo</th>
-                                <th>Total Alumnos</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="gruposList">
-                            <!-- Los grupos se cargarán aquí -->
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 Sistema de Exámenes. Todos los derechos reservados.</p>
-        </div>
-    </footer>
-
-    <!-- Scripts -->
-    <script src="js/app.js"></script>
 </body>
 </html>
