@@ -1,4 +1,4 @@
-# 📚 Sistema de Calificaciones
+## 📚 Sistema de Calificaciones
 
 ### Gestión Académica Completa
 
